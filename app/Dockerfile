@@ -22,8 +22,7 @@ WORKDIR /var/www/html
 COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 RUN composer install --no-dev --optimize-autoloader
 
-# 権限の変更
 RUN chown -R www-data:www-data /var/www/html/storage /var/www/html/bootstrap/cache
 
-# 🚀 ここでデータベースのマイグレーションと起動を同時に行います
+# 🚀 起動するときに、マイグレーションとサーバー起動を順番に実行します
 CMD php artisan migrate --force && apache2-foreground
