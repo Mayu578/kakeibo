@@ -96,9 +96,6 @@ return [
             'prefix_indexes' => true,
             'search_path' => 'public',
             'sslmode' => 'no-verify',
-            'options' => [
-                PDO::ATTR_EMULATE_PREPARES => true,
-            ],
         ],
 
         'sqlsrv' => [
