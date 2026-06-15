@@ -181,3 +181,8 @@ return [
     ],
 
 ];
+
+// 📢 この下に、以下の3行をそのまま貼り付けて保存してください！
+if (isset($_ENV['DATABASE_URL'])) {
+    config(['database.connections.pgsql.sslmode' => 'no-verify']);
+}
