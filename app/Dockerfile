@@ -1,4 +1,3 @@
-cat << 'EOF' > Dockerfile
 FROM php:8.2-apache
 
 # 必要な拡張機能のインストール
@@ -26,5 +25,5 @@ RUN composer install --no-dev --optimize-autoloader
 # 権限の変更
 RUN chown -R www-data:www-data /var/www/html/storage /var/www/html/bootstrap/cache
 
-CMD ["apache2-foreground"]
-EOF
+# 🚀 ここでデータベースのマイグレーションと起動を同時に行います
+CMD php artisan migrate --force && apache2-foreground
