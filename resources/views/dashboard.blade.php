@@ -46,7 +46,8 @@
                                             style="display:inline;">
                                             @csrf
                                             @method('DELETE')
-                                            <button type="submit" onclick="return confirm('本当に削除しますか？')">削除</button>
+                                            <button type="submit"  class="px-3 py-1 text-xs bg-stone-100 text-stone-600 rounded-lg hover:bg-stone-200 transition-colors"
+                                            onclick="return confirm('本当に削除しますか？')">削除</button>
                                         </form>
                                     </td>
                                 </tr>
