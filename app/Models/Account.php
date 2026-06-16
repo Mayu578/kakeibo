@@ -6,8 +6,12 @@ use Illuminate\Database\Eloquent\Model;
 
 class Account extends Model
 {
-    protected $fillable = ['name', 'balance'];
-
+    protected $fillable = [
+        'name',
+        'balance',
+        'type', // ★ここを追加
+    ];
+    
     public function fixedCosts()
     {
         return $this->hasMany(FixedCost::class);
