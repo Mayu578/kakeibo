@@ -7,7 +7,7 @@
 
                 <div class="flex justify-between items-center mb-6 md:mb-8">
                     <h2 class="text-base md:text-lg font-bold tracking-wide text-stone-800">口座一覧</h2>
-                    <a href="#" class="px-5 py-2 text-xs md:text-sm bg-[#8A9A86] text-white font-medium rounded-xl hover:bg-[#788874] shadow-sm transition-colors duration-200">
+                    <a href="{{ route('accounts.create') }}" class="px-5 py-2 text-xs md:text-sm bg-[#8A9A86] text-white font-medium rounded-xl hover:bg-[#788874] shadow-sm transition-colors duration-200">
                         ＋ 口座登録
                     </a>
                 </div>
