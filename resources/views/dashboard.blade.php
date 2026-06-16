@@ -22,6 +22,7 @@
                                 <th class="py-3 text-left font-normal">口座名</th>
                                 <th class="py-3 text-right font-normal">残高</th>
                                 <th></th>
+                                <th></th>
                             </tr>
                         </thead>
 
