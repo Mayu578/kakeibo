@@ -46,6 +46,16 @@ class AccountController extends Controller
         return redirect()->route('accounts.index');
     }
 
+    public function destroy($id)
+    {
+        // 指定した口座を削除
+        $account = \App\Models\Account::findOrFail($id);
+        $account->delete();
+
+        // 削除後に一覧へリダイレクト（メッセージ付き）
+        return redirect()->route('accounts.index')->with('success', '口座を削除しました。');
+    }
+
     public function editBalance(Account $account)
     {
         return view('accounts.edit-balance', compact('account'));
