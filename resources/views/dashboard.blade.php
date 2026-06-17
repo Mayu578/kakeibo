@@ -46,8 +46,9 @@
                                             style="display:inline;">
                                             @csrf
                                             @method('DELETE')
-                                            <button type="submit"  class="px-3 py-1 text-xs bg-stone-100 text-stone-600 rounded-lg hover:bg-stone-200 transition-colors"
-                                            onclick="return confirm('本当に削除しますか？')">削除</button>
+                                            <button type="submit"
+                                                class="px-3 py-1 text-xs bg-stone-100 text-stone-600 rounded-lg hover:bg-stone-200 transition-colors"
+                                                onclick="return confirm('本当に削除しますか？')">削除</button>
                                         </form>
                                     </td>
                                 </tr>
@@ -179,9 +180,31 @@
                 </div>
             </div>
 
-            <div class="mt-6">
-                <canvas id="myChart" class="max-h-64 w-full"></canvas>
-            </div>
+            <section class="max-w-3xl mx-auto">
+                <div class="mt-6">
+                    <canvas id="myChart" class="max-h-64 w-full"></canvas>
+                </div>
+            </section>
+            <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+            <script>
+                const ctx = document.getElementById('myChart').getContext('2d');
+                new Chart(ctx, {
+                    type: 'line',
+                    data: {
+                        labels: ['1月', '2月', '3月', '4月', '5月', '6月'], // 月のラベル
+                        datasets: [{
+                            label: '資産推移 (円)',
+                            data: [2000000, 2050000, 2080000, 2095000, 2105000, 2112282], // ここを実際の数値に！
+                            borderColor: '#8A9A86', // あなたのサイトのテーマカラーに合わせました
+                            tension: 0.3
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false
+                    }
+                });
+            </script>
         </section>
 
 
