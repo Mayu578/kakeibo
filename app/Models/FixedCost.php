@@ -11,6 +11,7 @@ class FixedCost extends Model
         'name',
         'amount',
         'withdrawal_day',
+        'end_date',
     ];
 
     public function account()

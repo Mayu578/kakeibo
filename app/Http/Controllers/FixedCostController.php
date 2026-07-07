@@ -25,16 +25,23 @@ class FixedCostController extends Controller
 
     public function store(Request $request)
     {
-        $request->validate([
-            'account_id' => 'required',
-            'name' => 'required',
+
+
+
+        // 1. バリデーション（終了日は null であっても良い）
+        $validated = $request->validate([
+            'account_id' => 'required|integer',
+            'name' => 'required|string',
             'amount' => 'required|integer',
             'withdrawal_day' => 'required|integer|min:1|max:31',
+            'end_date' => 'nullable|date',
         ]);
 
-        FixedCost::create($request->all());
 
-        return redirect()->route('fixed-costs.index');
+        // 3. 保存
+        \App\Models\FixedCost::create($validated);
+
+        return redirect()->route('fixed-costs.index')->with('success', '登録しました');
     }
 
     public function destroy(FixedCost $fixedCost)

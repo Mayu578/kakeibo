@@ -18,7 +18,8 @@ return new class extends Migration
             $table->integer('amount');
             $table->integer('withdrawal_day'); // 毎月何日か
             $table->timestamps();
-        });
+
+             });
     }
 
     /**

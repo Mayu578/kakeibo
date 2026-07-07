@@ -11,9 +11,7 @@ class MonthlyCommentController extends Controller
 
     public function dashboard(Request $request)
     {
-        dd('ここ通ってる');
-
-
+    
         $month = $request->input('month', now()->format('Y-m'));
 
         $comments = MonthlyComment::where('month', $month)->get();

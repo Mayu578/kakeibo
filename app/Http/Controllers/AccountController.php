@@ -81,6 +81,7 @@ class AccountController extends Controller
 
         // 🔽 追加：年月分解
         $date = \Carbon\Carbon::parse($month);
+        $lastDayOfMonth = $date->copy()->endOfMonth(); // その月の末日（例: 2026-05-31）
         $year = $date->year;
         $monthNum = $date->month;
 
@@ -108,7 +109,11 @@ class AccountController extends Controller
             ->sum('amount');
 
         // 固定費
-        $totalFixedCost = FixedCost::sum('amount');
+        // その月の「月末日」時点で有効なものだけを抽出する
+        $totalFixedCost = FixedCost::where(function ($query) use ($lastDayOfMonth) {
+            $query->whereNull('end_date')
+                  ->orWhere('end_date', '>=', $lastDayOfMonth);
+        })->sum('amount');
 
         // 差額
         $balance = $totalIncome - ($totalExpense + $totalFixedCost);

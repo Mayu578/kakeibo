@@ -8,17 +8,18 @@
 
         <div class="flex justify-center gap-3 mb-8">
             <a href="{{ route('fixed-costs.create') }}"
-               class="px-5 py-2.5 bg-[#8A9A86] text-white text-sm font-medium rounded-xl shadow-sm hover:bg-[#788874] transition-colors duration-200">
+                class="px-5 py-2.5 bg-[#8A9A86] text-white text-sm font-medium rounded-xl shadow-sm hover:bg-[#788874] transition-colors duration-200">
                 ＋ 新規登録
             </a>
 
             <a href="{{ route('dashboard') }}"
-               class="px-5 py-2.5 bg-stone-50 border border-stone-200 text-stone-500 text-sm rounded-xl hover:bg-stone-100 transition-colors">
+                class="px-5 py-2.5 bg-stone-50 border border-stone-200 text-stone-500 text-sm rounded-xl hover:bg-stone-100 transition-colors">
                 戻る
             </a>
         </div>
 
-        <div class="bg-white rounded-2xl md:rounded-3xl shadow-[0_4px_24px_rgba(138,154,134,0.04)] p-4 md:p-6 border border-stone-200/60">
+        <div
+            class="bg-white rounded-2xl md:rounded-3xl shadow-[0_4px_24px_rgba(138,154,134,0.04)] p-4 md:p-6 border border-stone-200/60">
             <div class="overflow-x-auto">
                 <table class="w-full text-sm min-w-[450px]">
                     <thead>
@@ -27,6 +28,7 @@
                             <th class="py-3 text-left font-normal">名称</th>
                             <th class="py-3 text-right font-normal">金額</th>
                             <th class="py-3 text-center font-normal">引き落とし日</th>
+                            <th>終了日</th>
                             <th class="w-20"></th>
                         </tr>
                     </thead>
@@ -50,12 +52,15 @@
                                     {{ $fixedCost->withdrawal_day }} 日
                                 </td>
 
+                                <td>
+                                    {{ $fixedCost->end_date }}
+                                </td>
+
                                 <td class="py-4 text-right">
                                     <form action="{{ route('fixed-costs.destroy', $fixedCost) }}" method="POST">
                                         @csrf
                                         @method('DELETE')
-                                        <button type="submit"
-                                            onclick="return confirm('本当に削除しますか？')"
+                                        <button type="submit" onclick="return confirm('本当に削除しますか？')"
                                             class="px-3 py-1 text-xs bg-stone-50 border border-stone-200 text-stone-400 rounded-lg hover:bg-red-50 hover:text-red-500 hover:border-red-100 transition-all">
                                             削除
                                         </button>
