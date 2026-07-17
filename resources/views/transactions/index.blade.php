@@ -25,21 +25,58 @@
 
         <div class="max-w-md mx-auto mb-8 bg-stone-50 border border-stone-200/80 rounded-2xl p-4">
             <form method="GET" class="flex justify-center items-center gap-2 mb-3">
-                <input type="month" name="month" value="{{ $month }}" class="border border-stone-200 rounded-xl p-2 text-sm bg-white text-stone-700 focus:outline-none focus:border-[#8A9A86] focus:ring-1 focus:ring-[#8A9A86]">
+                <input type="month" name="month" value="{{ $month }}"
+                    class="border border-stone-200 rounded-xl p-2 text-sm bg-white text-stone-700 focus:outline-none focus:border-[#8A9A86] focus:ring-1 focus:ring-[#8A9A86]">
 
-                <button class="px-4 py-2 bg-stone-800 text-white text-sm rounded-xl hover:bg-stone-700 transition-colors">
+                <button
+                    class="px-4 py-2 bg-stone-800 text-white text-sm rounded-xl hover:bg-stone-700 transition-colors">
                     表示
                 </button>
             </form>
-            
+
             <div class="flex justify-between items-center px-2 text-xs font-medium text-stone-400">
-                <a href="?month={{ \Carbon\Carbon::parse($month)->subMonth()->format('Y-m') }}" class="hover:text-stone-600 transition-colors flex items-center gap-1">← 前月</a>
-                <span class="text-stone-500 font-semibold text-sm">{{ \Carbon\Carbon::parse($month)->format('Y年m月') }}</span>
-                <a href="?month={{ \Carbon\Carbon::parse($month)->addMonth()->format('Y-m') }}" class="hover:text-stone-600 transition-colors flex items-center gap-1">次月 →</a>
+                <a href="?month={{ \Carbon\Carbon::parse($month)->subMonth()->format('Y-m') }}"
+                    class="hover:text-stone-600 transition-colors flex items-center gap-1">← 前月</a>
+                <span
+                    class="text-stone-500 font-semibold text-sm">{{ \Carbon\Carbon::parse($month)->format('Y年m月') }}</span>
+                <a href="?month={{ \Carbon\Carbon::parse($month)->addMonth()->format('Y-m') }}"
+                    class="hover:text-stone-600 transition-colors flex items-center gap-1">次月 →</a>
             </div>
         </div>
 
-        <div class="bg-white rounded-2xl md:rounded-3xl shadow-[0_4px_24px_rgba(138,154,134,0.04)] p-4 md:p-6 border border-stone-200/60">
+        <!-- まとめボードエリア -->
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
+
+            <!-- 変動費（今月の取引合計） -->
+            <div class="bg-white rounded-2xl p-5 border border-stone-200/60 shadow-[0_4px_20px_rgba(0,0,0,0.02)]">
+                <span class="text-xs text-stone-400 font-medium block mb-1">今月の変動費</span>
+                <span class="text-xl font-bold text-stone-800">
+                    {{ number_format($totalExpenses) }} <span class="text-xs font-normal text-stone-500">円</span>
+                </span>
+            </div>
+
+            <!-- 固定費合計 -->
+            <div class="bg-white rounded-2xl p-5 border border-stone-200/60 shadow-[0_4px_20px_rgba(0,0,0,0.02)]">
+                <span class="text-xs text-stone-400 font-medium block mb-1">毎月の固定費</span>
+                <span class="text-xl font-bold text-stone-800">
+                    {{ number_format($fixedCostsTotal) }} <span class="text-xs font-normal text-stone-500">円</span>
+                </span>
+            </div>
+
+            <!-- 差額（合計支出） -->
+            <div
+                class="bg-[#8A9A86]/10 rounded-2xl p-5 border border-[#8A9A86]/20 shadow-[0_4px_20px_rgba(138,154,134,0.02)]">
+                <span class="text-xs text-[#6B7B67] font-medium block mb-1">総支出（変動費 ＋ 固定費）</span>
+                <span class="text-xl font-bold text-[#6B7B67]">
+                    {{ number_format($totalExpenses + $fixedCostsTotal) }} <span
+                        class="text-xs font-normal text-stone-600">円</span>
+                </span>
+            </div>
+
+        </div>
+
+        <div
+            class="bg-white rounded-2xl md:rounded-3xl shadow-[0_4px_24px_rgba(138,154,134,0.04)] p-4 md:p-6 border border-stone-200/60">
             <div class="overflow-x-auto">
                 <table class="w-full text-sm min-w-[600px]">
                     <thead>
@@ -67,11 +104,13 @@
 
                                 <td class="py-4 text-center whitespace-nowrap">
                                     @if ($transaction->type === 'income')
-                                        <span class="px-2.5 py-0.5 text-xs bg-stone-100 text-[#6B8E6A] rounded-md font-medium border border-[#6B8E6A]/20">
+                                        <span
+                                            class="px-2.5 py-0.5 text-xs bg-stone-100 text-[#6B8E6A] rounded-md font-medium border border-[#6B8E6A]/20">
                                             収入
                                         </span>
                                     @else
-                                        <span class="px-2.5 py-0.5 text-xs bg-stone-50 text-[#C87A53] rounded-md font-medium border border-[#C87A53]/10">
+                                        <span
+                                            class="px-2.5 py-0.5 text-xs bg-stone-50 text-[#C87A53] rounded-md font-medium border border-[#C87A53]/10">
                                             支出
                                         </span>
                                     @endif
@@ -116,5 +155,5 @@
         </div>
 
     </div>
-    
+
 </x-app-layout>

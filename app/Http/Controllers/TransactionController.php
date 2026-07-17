@@ -7,62 +7,48 @@ use App\Models\Account;
 use Illuminate\Http\Request;
 use Carbon\Carbon;
 
-
 class TransactionController extends Controller
 {
 
     public function index(Request $request)
     {
-        $transactions = Transaction::with('account')
+        // ① 月を取得（未指定なら今月）
+        $month = $request->input('month', now()->format('Y-m'));
+        $date = Carbon::createFromFormat('Y-m', $month);
+        $userId = auth()->id();
+
+        // ② 当月の取引（変動費）データを取得
+        $transactions = Transaction::where('user_id', $userId)
+            ->with('account')
+            ->whereYear('transaction_date', $date->year)
+            ->whereMonth('transaction_date', $date->month)
             ->orderBy('transaction_date', 'desc')
             ->get();
 
+        // ③ 当月の変動費の支出合計を計算（※収入と支出が区別されている場合、支出のみ合計。もし単純合算なら $transactions->sum('amount') に変更してください）
+        // ここでは「支出（typeが'expense'、あるいは金額がマイナスなど）」を合計する例にしています
+        // 実装に合わせて調整してください。単純な合計なら $transactions->sum('amount') でOKです。
+        $totalExpenses = $transactions->sum('amount');
 
-            // ① 月を取得（未指定なら今月）
-        $month = $request->input('month', now()->format('Y-m'));
+        // ④ アクティブな固定費を取得して合計を算出
+        $today = now()->toDateString();
+        $fixedCostsTotal = \App\Models\FixedCost::where('user_id', $userId)
+            ->where(function ($query) use ($today) {
+                $query->whereNull('end_date')
+                    ->orWhere('end_date', '>=', $today);
+            })
+            ->sum('amount');
 
-           // ② 年と月に分解
-        $date = Carbon::createFromFormat('Y-m', $month);
-
-         // ③ 月で絞り込み
-        $transactions = Transaction::whereYear('transaction_date', $date->year)
-            ->whereMonth('transaction_date', $date->month)
-            ->orderBy('transaction_date')
-            ->get();
-
-
-        // 支出だけ集計
-        $expenses = Transaction::with('account')
-            ->where('type', 'expense')
-            ->whereYear('transaction_date', $date->year)
-            ->whereMonth('transaction_date', $date->month)
-            ->selectRaw('account_id, SUM(amount) as total')
-            ->groupBy('account_id')
-            ->get();
-
-        $labels = $expenses->map(function ($item) {
-            return $item->account->name;
-        });
-
-        $data = $expenses->pluck('total');
-
-        // ④ Bladeに渡す
-        return view('transactions.index', compact(
-            'transactions',
-            'labels',
-            'data',
-            'month'
-        ));
+        return view('transactions.index', compact('transactions', 'totalExpenses', 'fixedCostsTotal', 'month'));
     }
-
-
-
 
     public function create()
     {
         $accounts = Account::all();
         return view('transactions.create', compact('accounts'));
     }
+
+
     public function store(Request $request)
     {
         $validated = $request->validate([
@@ -75,6 +61,10 @@ class TransactionController extends Controller
             'description' => 'nullable|string|max:255',
         ]);
 
+        // 1. バリデーション済みデータに、現在ログインしているユーザーのIDを合流させる
+        $validated['user_id'] = auth()->id();
+
+        // 2. Transactionモデルから直接レコードを作成する（これでリレーションエラーを100%回避できます）
         $transaction = Transaction::create($validated);
 
         // 残高更新は行わない

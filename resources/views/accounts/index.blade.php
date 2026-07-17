@@ -11,7 +11,7 @@
             + 口座新規登録
         </a>
 
-        <a href="{{route('fixed-costs.index')}}" class="px-5 py-2.5 bg-stone-100 border border-stone-200 text-stone-600 text-sm rounded-xl hover:bg-stone-200 transition-colors">
+        <a href="{{route('fixed_costs.index')}}" class="px-5 py-2.5 bg-stone-100 border border-stone-200 text-stone-600 text-sm rounded-xl hover:bg-stone-200 transition-colors">
             固定費の確認
         </a>
 

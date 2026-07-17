@@ -9,7 +9,8 @@ class Account extends Model
     protected $fillable = [
         'name',
         'balance',
-        'type', // ★ここを追加
+        'type', 
+        'user_id',
     ];
     
     public function fixedCosts()
