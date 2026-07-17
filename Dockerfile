@@ -1,32 +1,29 @@
-FROM php:8.2-fpm
+FROM php:8.4-apache
 
-# 必要なシステムパッケージとPHP拡張をインストール
+# 必要な拡張機能のインストール
 RUN apt-get update && apt-get install -y \
-    libpng-dev \
-    libjpeg-dev \
-    libfreetype6-dev \
-    libwebp-dev \
     libpq-dev \
     zip \
     unzip \
-    && docker-php-ext-configure gd --with-freetype --with-jpeg --with-webp \
-    && docker-php-ext-install gd pdo pdo_mysql pdo_pgsql pgsql
+    git \
+    && docker-php-ext-install pdo pdo_pgsql
 
-# Composer
+# Apacheの設定変更
+ENV APACHE_DOCUMENT_ROOT /var/www/html/public
+RUN sed -ri -e 's!/var/www/html!${APACHE_DOCUMENT_ROOT}!g' /etc/apache2/sites-available/*.conf
+RUN sed -ri -e 's!/var/www/!${APACHE_DOCUMENT_ROOT}!g' /etc/apache2/apache2.conf /etc/apache2/conf-available/*.conf
+RUN a2enmod rewrite
+
+# ソースコードのコピー
+COPY . /var/www/html
+WORKDIR /var/www/html
+
+# Composerのインストールと実行
 COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
-
-# 作業ディレクトリ
-WORKDIR /var/www
-
-# ソースコード
-COPY . .
-
-# Composer
 RUN composer install --no-dev --optimize-autoloader
 
-# 権限
-RUN chown -R www-data:www-data storage bootstrap/cache
+# 権限の変更
+RUN chown -R www-data:www-data /var/www/html/storage /var/www/html/bootstrap/cache
 
-EXPOSE 8080
-
-CMD php artisan migrate --force && php artisan serve --host=0.0.0.0 --port=${PORT:-8080}
+# データベースのマイグレーションと起動
+CMD php artisan migrate --force && apache2-foreground

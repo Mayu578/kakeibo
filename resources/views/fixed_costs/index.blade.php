@@ -7,7 +7,7 @@
         </h1>
 
         <div class="flex justify-center gap-3 mb-8">
-            <a href="{{ route('fixed-costs.create') }}"
+            <a href="{{ route('fixed_costs.create') }}"
                 class="px-5 py-2.5 bg-[#8A9A86] text-white text-sm font-medium rounded-xl shadow-sm hover:bg-[#788874] transition-colors duration-200">
                 ＋ 新規登録
             </a>
@@ -16,6 +16,14 @@
                 class="px-5 py-2.5 bg-stone-50 border border-stone-200 text-stone-500 text-sm rounded-xl hover:bg-stone-100 transition-colors">
                 戻る
             </a>
+        </div>
+
+        <!-- 【追加】合計金額表示エリア -->
+        <div class="mb-6 bg-[#8A9A86]/10 border border-[#8A9A86]/20 rounded-2xl p-5 flex justify-between items-center shadow-sm">
+            <span class="text-stone-700 font-medium text-sm md:text-base">毎月の固定費 合計</span>
+            <span class="text-xl md:text-2xl font-bold text-[#6B7B67] tracking-wide">
+                {{ number_format($fixedCosts->sum('amount')) }} <span class="text-sm font-normal text-stone-600">円 / 月</span>
+            </span>
         </div>
 
         <div
@@ -28,7 +36,7 @@
                             <th class="py-3 text-left font-normal">名称</th>
                             <th class="py-3 text-right font-normal">金額</th>
                             <th class="py-3 text-center font-normal">引き落とし日</th>
-                            <th>終了日</th>
+                            <th class="py-3 text-center font-normal">終了日</th>
                             <th class="w-20"></th>
                         </tr>
                     </thead>
@@ -52,12 +60,12 @@
                                     {{ $fixedCost->withdrawal_day }} 日
                                 </td>
 
-                                <td>
-                                    {{ $fixedCost->end_date }}
+                                <td class="py-4 text-center text-stone-400 text-xs">
+                                    {{ $fixedCost->end_date ?? '-' }}
                                 </td>
 
                                 <td class="py-4 text-right">
-                                    <form action="{{ route('fixed-costs.destroy', $fixedCost) }}" method="POST">
+                                    <form action="{{ route('fixed_costs.destroy', $fixedCost) }}" method="POST">
                                         @csrf
                                         @method('DELETE')
                                         <button type="submit" onclick="return confirm('本当に削除しますか？')"

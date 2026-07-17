@@ -45,4 +45,10 @@ class User extends Authenticatable
             'password' => 'hashed',
         ];
     }
+
+    public function transactions()
+    {
+        // 1人のユーザーは、複数の取引（transactions）を持ちます
+        return $this->hasMany(Transaction::class);
+    }
 }

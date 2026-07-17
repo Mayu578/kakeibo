@@ -15,7 +15,9 @@ class Transaction extends Model
         'description',
         'payment_type',
         'due_date',
+        'user_id',
     ];
+
 
 
     public function account()
@@ -60,5 +62,11 @@ class Transaction extends Model
         // 反映済みとして日付を記録
         $this->reflect_date = now();
         $this->save();
+    }
+
+    public function user()
+    {
+        // 取引は、1人のユーザーに所属します
+        return $this->belongsTo(User::class);
     }
 }

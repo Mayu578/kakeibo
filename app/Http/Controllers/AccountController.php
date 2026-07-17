@@ -2,24 +2,21 @@
 
 namespace App\Http\Controllers;
 
-
 use App\Models\Account;
 use Illuminate\Http\Request;
 use App\Models\Transaction;
 use App\Models\FixedCost;
 use Carbon\Carbon;
 
-
 class AccountController extends Controller
 {
-
-
-
     public function index()
     {
-        $accounts = Account::all();  //裏でphpがsqlに変換し、DBからデータ操作している
+        // 【修正】ログインユーザー（mayu）の口座のみ取得
+        $accounts = Account::where('user_id', auth()->id())->get();
 
-        $total = Account::sum('balance');
+        // 【修正】ログインユーザーの口座残高の合計のみ算出
+        $total = $accounts->sum('balance');
 
         return view('accounts.index', compact('accounts', 'total'));
     }
@@ -34,13 +31,15 @@ class AccountController extends Controller
         $request->validate([
             'name' => 'required|string|max:255',
             'balance' => 'required|numeric',
-            'type' => 'required|string', // 追加
+            'type' => 'required|string',
         ]);
 
+        // 【修正】作成する口座にログインユーザーの ID を紐付ける
         Account::create([
+            'user_id' => auth()->id(),
             'name' => $request->name,
             'balance' => $request->balance,
-            'type' => $request->type, // 追加
+            'type' => $request->type,
         ]);
 
         return redirect()->route('accounts.index');
@@ -48,47 +47,55 @@ class AccountController extends Controller
 
     public function destroy($id)
     {
-        // 指定した口座を削除
-        $account = \App\Models\Account::findOrFail($id);
+        // 【修正】他人の口座を削除できないよう、ログインユーザーの口座から探す
+        $account = Account::where('user_id', auth()->id())->findOrFail($id);
         $account->delete();
 
-        // 削除後に一覧へリダイレクト（メッセージ付き）
         return redirect()->route('accounts.index')->with('success', '口座を削除しました。');
     }
 
+    // 残高編集画面の表示
     public function editBalance(Account $account)
     {
+        if ($account->user_id !== auth()->id()) {
+            abort(403);
+        }
+
         return view('accounts.edit-balance', compact('account'));
     }
 
+    // 残高の更新処理
     public function updateBalance(Request $request, Account $account)
     {
-        $request->validate([
-            'balance' => 'required|numeric'
+        if ($account->user_id !== auth()->id()) {
+            abort(403);
+        }
+
+        $validated = $request->validate([
+            'balance' => 'required|integer',
         ]);
 
-        $account->balance = $request->balance;
-        $account->save();
+        $account->update($validated);
 
         return redirect()->route('accounts.index')
-            ->with('success', '残高を更新しました'); // ← これ大事
+            ->with('success', '残高を更新しました。');
     }
-
 
     public function dashboard(Request $request)
     {
         $month = $request->input('month', now()->format('Y-m'));
-
-        // 🔽 追加：年月分解
-        $date = \Carbon\Carbon::parse($month);
-        $lastDayOfMonth = $date->copy()->endOfMonth(); // その月の末日（例: 2026-05-31）
+        $date = Carbon::parse($month);
+        $lastDayOfMonth = $date->copy()->endOfMonth();
         $year = $date->year;
         $monthNum = $date->month;
+        $userId = auth()->id(); // 【追加】ログインユーザーIDを取得
 
-        $accounts = Account::all();
+        // 【修正】ログインユーザー（mayu）の口座のみ取得
+        $accounts = Account::where('user_id', $userId)->get();
 
-        // 🔽 月ごとの取引
-        $transactions = Transaction::with('account')
+        // 【修正】ログインユーザー（mayu）の取引のみ取得
+        $transactions = Transaction::where('user_id', $userId)
+            ->with('account')
             ->whereYear('transaction_date', $year)
             ->whereMonth('transaction_date', $monthNum)
             ->orderBy('transaction_date', 'desc')
@@ -96,30 +103,33 @@ class AccountController extends Controller
 
         $total = $accounts->sum('balance');
 
-        // 支出
-        $totalExpense = Transaction::where('type', 'expense')
+        // 【修正】ログインユーザー（mayu）の支出のみ取得
+        $totalExpense = Transaction::where('user_id', $userId)
+            ->where('type', 'expense')
             ->whereYear('transaction_date', $year)
             ->whereMonth('transaction_date', $monthNum)
             ->sum('amount');
 
-        // 収入
-        $totalIncome = Transaction::where('type', 'income')
+        // 【修正】ログインユーザー（mayu）の収入のみ取得
+        $totalIncome = Transaction::where('user_id', $userId)
+            ->where('type', 'income')
             ->whereYear('transaction_date', $year)
             ->whereMonth('transaction_date', $monthNum)
             ->sum('amount');
 
-        // 固定費
-        // その月の「月末日」時点で有効なものだけを抽出する
-        $totalFixedCost = FixedCost::where(function ($query) use ($lastDayOfMonth) {
-            $query->whereNull('end_date')
-                  ->orWhere('end_date', '>=', $lastDayOfMonth);
-        })->sum('amount');
+        // 【修正】ログインユーザー（mayu）の固定費のみ取得
+        $totalFixedCost = FixedCost::where('user_id', $userId)
+            ->where(function ($query) use ($lastDayOfMonth) {
+                $query->whereNull('end_date')
+                    ->orWhere('end_date', '>=', $lastDayOfMonth);
+            })->sum('amount');
 
-        // 差額
         $balance = $totalIncome - ($totalExpense + $totalFixedCost);
 
-        // コメント
-        $comments = \App\Models\MonthlyComment::where('month', $month)->get();
+        // 【修正】ログインユーザー（mayu）のコメントのみ取得
+        $comments = \App\Models\MonthlyComment::where('user_id', $userId)
+            ->where('month', $month)
+            ->get();
 
         return view('dashboard', compact(
             'accounts',

@@ -13,7 +13,18 @@ class FixedCostController extends Controller
 
     public function index()
     {
-        $fixedCosts = FixedCost::with('account')->get();
+        $today = now()->toDateString(); // 今日の日付（2026-07-15）を取得
+
+        // ログインユーザーの固定費のうち、
+        // 「終了日が空（null）」または「終了日が今日以降（未来）」のものだけを取得する
+        $fixedCosts = FixedCost::where('user_id', auth()->id())
+            ->where(function ($query) use ($today) {
+                $query->whereNull('end_date')
+                    ->orWhere('end_date', '>=', $today);
+            })
+            ->with('account')
+            ->get();
+
         return view('fixed_costs.index', compact('fixedCosts'));
     }
 
@@ -25,23 +36,21 @@ class FixedCostController extends Controller
 
     public function store(Request $request)
     {
-
-
-
-        // 1. バリデーション（終了日は null であっても良い）
         $validated = $request->validate([
-            'account_id' => 'required|integer',
-            'name' => 'required|string',
-            'amount' => 'required|integer',
+            'account_id' => 'required|exists:accounts,id',
+            'name' => 'required|string|max:255',
+            'amount' => 'required|numeric|min:0',
             'withdrawal_day' => 'required|integer|min:1|max:31',
             'end_date' => 'nullable|date',
         ]);
 
+        // ログインユーザーのIDをセットして作成
+        $validated['user_id'] = auth()->id();
 
-        // 3. 保存
-        \App\Models\FixedCost::create($validated);
+        FixedCost::create($validated);
 
-        return redirect()->route('fixed-costs.index')->with('success', '登録しました');
+        return redirect()->route('fixed_costs.index')
+            ->with('success', '固定費を登録しました。');
     }
 
     public function destroy(FixedCost $fixedCost)
