@@ -1,59 +1,82 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
+# 家計簿アプリ (Kakeibo)
 
-<p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+シンプルで使いやすい家計簿管理アプリケーションです。日々の収入・支出の記録や、家賃・サブスクなどの固定費管理をまとめて行うことができます。
 
-## About Laravel
+## 主な機能
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+### 📊 取引管理 (Transactions)
+- 日々の収入・支出の記録、編集
+- 月ごとの集計チャート表示
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+### ⏳ 固定費管理 (Fixed Costs)
+- 家賃、保険、サブスクなど、毎月定額で発生する支出の登録・管理
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+### 🔐 ユーザー認証
+- ログイン・新規登録機能
+- ユーザーごとにデータを管理（取引・固定費・アカウント情報）
 
-## Learning Laravel
+## 技術スタック
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework. You can also check out [Laravel Learn](https://laravel.com/learn), where you will be guided through building a modern Laravel application.
+- **フレームワーク**: Laravel
+- **言語**: PHP
+- **フロントエンド**: Blade / CSS
+- **データベース**: MySQL
 
-If you don't feel like reading, [Laracasts](https://laracasts.com) can help. Laracasts contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+## セットアップ
 
-## Laravel Sponsors
+### 必要要件
 
-We would like to extend our thanks to the following sponsors for funding Laravel development. If you are interested in becoming a sponsor, please visit the [Laravel Partners program](https://partners.laravel.com).
+- PHP
+- Composer
+- MySQL
+- Node.js / npm
 
-### Premium Partners
+### インストール手順
 
-- **[Vehikl](https://vehikl.com)**
-- **[Tighten Co.](https://tighten.co)**
-- **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
-- **[64 Robots](https://64robots.com)**
-- **[Curotec](https://www.curotec.com/services/technologies/laravel)**
-- **[DevSquad](https://devsquad.com/hire-laravel-developers)**
-- **[Redberry](https://redberry.international/laravel-development)**
-- **[Active Logic](https://activelogic.com)**
+```bash
+# リポジトリをクローン
+git clone https://github.com/Mayu578/kakeibo.git
+cd kakeibo
 
-## Contributing
+# 依存パッケージをインストール
+composer install
+npm install
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+# 環境設定ファイルをコピー
+cp .env.example .env
+php artisan key:generate
 
-## Code of Conduct
+# .envファイルにデータベース情報を設定
+# DB_DATABASE, DB_USERNAME, DB_PASSWORD など
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+# マイグレーション実行
+php artisan migrate
 
-## Security Vulnerabilities
+# アセットのビルド
+npm run build
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
+# 開発サーバーを起動
+php artisan serve
+```
 
-## License
+## 開発の流れ
 
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+新しい機能を追加する際は、以下の流れで作業してください。
+
+```bash
+# 新しいブランチを作成
+git checkout -b feature/機能名
+
+# 変更をコミット
+git add .
+git commit -m "変更内容"
+
+# GitHubにpush
+git push -u origin feature/機能名
+
+# GitHub上でPull Requestを作成し、mainにマージ
+```
+
+## ライセンス
+
+このプロジェクトは個人利用・学習目的で作成されています。
