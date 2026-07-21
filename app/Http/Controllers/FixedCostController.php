@@ -59,4 +59,6 @@ class FixedCostController extends Controller
 
         return redirect()->route('fixed-costs.index');
     }
+
+    
 }
