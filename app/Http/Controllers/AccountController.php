@@ -88,12 +88,10 @@ class AccountController extends Controller
         $lastDayOfMonth = $date->copy()->endOfMonth();
         $year = $date->year;
         $monthNum = $date->month;
-        $userId = auth()->id(); // 【追加】ログインユーザーIDを取得
+        $userId = auth()->id();
 
-        // 【修正】ログインユーザー（mayu）の口座のみ取得
         $accounts = Account::where('user_id', $userId)->get();
 
-        // 【修正】ログインユーザー（mayu）の取引のみ取得
         $transactions = Transaction::where('user_id', $userId)
             ->with('account')
             ->whereYear('transaction_date', $year)
@@ -103,30 +101,38 @@ class AccountController extends Controller
 
         $total = $accounts->sum('balance');
 
-        // 【修正】ログインユーザー（mayu）の支出のみ取得
         $totalExpense = Transaction::where('user_id', $userId)
             ->where('type', 'expense')
             ->whereYear('transaction_date', $year)
             ->whereMonth('transaction_date', $monthNum)
             ->sum('amount');
 
-        // 【修正】ログインユーザー（mayu）の収入のみ取得
         $totalIncome = Transaction::where('user_id', $userId)
             ->where('type', 'income')
             ->whereYear('transaction_date', $year)
             ->whereMonth('transaction_date', $monthNum)
             ->sum('amount');
 
-        // 【修正】ログインユーザー（mayu）の固定費のみ取得
-        $totalFixedCost = FixedCost::where('user_id', $userId)
+        // 【修正】固定費一覧を先に取得し、合計・件数・次回引落日をまとめて算出
+        $fixedCosts = FixedCost::where('user_id', $userId)
             ->where(function ($query) use ($lastDayOfMonth) {
                 $query->whereNull('end_date')
                     ->orWhere('end_date', '>=', $lastDayOfMonth);
-            })->sum('amount');
+            })
+            ->get();
+
+        $totalFixedCost = $fixedCosts->sum('amount');
+        $fixedCostsCount = $fixedCosts->count();
+
+        // 次回引落日（今日以降で一番近いwithdrawal_day。なければ来月の最小日に回す）
+        $todayDay = now()->day;
+        $nextWithdrawalDay = $fixedCosts->pluck('withdrawal_day')
+            ->filter(fn($day) => $day >= $todayDay)
+            ->sort()
+            ->first() ?? $fixedCosts->pluck('withdrawal_day')->sort()->first();
 
         $balance = $totalIncome - ($totalExpense + $totalFixedCost);
 
-        // 【修正】ログインユーザー（mayu）のコメントのみ取得
         $comments = \App\Models\MonthlyComment::where('user_id', $userId)
             ->where('month', $month)
             ->get();
@@ -139,6 +145,9 @@ class AccountController extends Controller
             'totalIncome',
             'balance',
             'totalFixedCost',
+            'fixedCosts', 
+            'fixedCostsCount',
+            'nextWithdrawalDay',
             'month',
             'comments'
         ));
