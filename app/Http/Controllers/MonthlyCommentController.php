@@ -5,43 +5,34 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 
 use App\Models\MonthlyComment;
+use App\Http\Requests\StoreMonthlyCommentRequest;
 
 class MonthlyCommentController extends Controller
 {
-
-    public function dashboard(Request $request)
+    public function index(string $month)
     {
-    
-        $month = $request->input('month', now()->format('Y-m'));
+        $comments = MonthlyComment::forMonth($month)->latest()->get();
 
-        $comments = MonthlyComment::where('month', $month)->get();
-
-        return view('dashboard', compact('month', 'comments'));
+        return view('monthly-summaries.show', compact('month', 'comments'));
     }
 
-    public function saveComment(Request $request)
+    public function store(StoreMonthlyCommentRequest $request, string $month)
     {
-        \App\Models\MonthlyComment::create(
-            [
-                'month' => $request->month, // ← 月で識別
-                'comment' => $request->comment
-            ]
-        );
+        MonthlyComment::create([
+            'user_id' => $request->user()->id,
+            'month' => $month,
+            'comment' => $request->validated()['comment'],
+        ]);
 
-        return redirect()->route('dashboard', [
-            'month' => $request->month // ← 同じ月に戻す
-        ])->with('success', '保存しました');
+        return back()->with('status', 'コメントを投稿しました');
     }
 
-    public function deleteComment(Request $request)
+    public function destroy(MonthlyComment $monthlyComment)
     {
-        // フォームから送られてきた comment_id を取得
-        $commentId = $request->input('comment_id');
+        $this->authorize('delete', $monthlyComment);
 
-        // 該当するデータをデータベースから削除
-        MonthlyComment::destroy($commentId);
+        $monthlyComment->delete();
 
-        // 成功メッセージとともにダッシュボードにリダイレクト
-        return redirect()->route('dashboard')->with('success', '感想を削除しました。');
+        return back()->with('status', 'コメントを削除しました');
     }
 }

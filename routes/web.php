@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\AccountController;
 use App\Http\Controllers\FixedCostController;
+use App\Http\Controllers\MonthlyCommentController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\TransactionController;
 use Illuminate\Support\Facades\Route;
@@ -30,6 +31,16 @@ Route::middleware(['auth'])->group(function () {
     Route::resource('transactions', TransactionController::class);
     Route::resource('accounts', AccountController::class);
     Route::resource('fixed_costs', FixedCostController::class);
+
+    // コメント
+    Route::pattern('month', '\d{4}-\d{2}');
+
+    Route::get('/monthly-summaries/{month}/comments', [MonthlyCommentController::class, 'index'])
+        ->name('monthly-comments.index');
+    Route::post('/monthly-summaries/{month}/comments', [MonthlyCommentController::class, 'store'])
+        ->name('monthly-comments.store');
+    Route::delete('/monthly-comments/{monthlyComment}', [MonthlyCommentController::class, 'destroy'])
+        ->name('monthly-comments.destroy');
 });
 
 require __DIR__ . '/auth.php';
