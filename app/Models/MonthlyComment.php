@@ -23,4 +23,9 @@ class MonthlyComment extends Model
     {
         return $query->where('month', $month);
     }
+
+    public function scopeForUser(Builder $query, int $userId): Builder
+    {
+        return $query->where('user_id', $userId);
+    }
 }

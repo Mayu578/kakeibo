@@ -16,7 +16,7 @@
 
         <form action="{{ route('accounts.updateBalance', $account) }}" method="POST" class="space-y-6">
             @csrf
-            @method('PUT')
+            @method('PATCH')
 
             <div class="bg-stone-50 border border-stone-200/60 rounded-xl p-4 flex justify-between items-center">
                 <span class="text-xs font-semibold text-stone-400 tracking-wider">対象口座</span>

@@ -11,7 +11,10 @@ class MonthlyCommentController extends Controller
 {
     public function index(string $month)
     {
-        $comments = MonthlyComment::forMonth($month)->latest()->get();
+        $comments = MonthlyComment::forMonth($month)
+            ->forUser(auth()->id())
+            ->latest()
+            ->get();
 
         return view('monthly-summaries.show', compact('month', 'comments'));
     }
