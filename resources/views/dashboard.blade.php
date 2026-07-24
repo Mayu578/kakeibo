@@ -9,7 +9,6 @@
                     $months = collect(range(0, 5))->map(fn($i) => now()->subMonths($i)->format('Y-m'));
                 @endphp
 
-
                 <!-- コメント（Monthly Comments）カード -->
                 <div
                     class="bg-white overflow-hidden shadow-sm sm:rounded-lg border border-stone-100 hover:shadow-md transition duration-200">
@@ -20,7 +19,7 @@
                         </div>
                         <p class="text-gray-600 text-sm mb-4">月ごとの振り返りメモを確認・投稿できます。</p>
 
-                        <ul class="flex flex-wrap gap-2">
+                        <ul class="flex flex-wrap gap-2 mb-6">
                             @foreach ($months as $m)
                                 <li>
                                     <a href="{{ route('monthly-comments.index', $m) }}"
@@ -30,6 +29,20 @@
                                 </li>
                             @endforeach
                         </ul>
+
+                        <!-- 今月の直近コメントをプレビュー -->
+                        <div class="border-t border-stone-100 pt-4">
+                            <p class="text-xs text-stone-400 mb-2">{{ $month }} の最新メモ</p>
+                            @forelse ($comments->take(6) as $comment)
+                                <div class="bg-stone-50 rounded-lg p-3 mb-2 text-sm text-gray-700">
+                                    <p class="whitespace-pre-wrap">{{ Str::limit($comment->comment, 60) }}</p>
+                                    <p class="text-xs text-gray-400 mt-1">{{ $comment->created_at->format('m/d H:i') }}
+                                    </p>
+                                </div>
+                            @empty
+                                <p class="text-sm text-gray-400">この月のメモはまだありません</p>
+                            @endforelse
+                        </div>
                     </div>
                 </div>
 
@@ -133,6 +146,7 @@
 
 
                 <!-- 口座残高（Accounts）カード -->
+                <!-- 口座残高（Accounts）カード -->
                 <div
                     class="bg-white overflow-hidden shadow-sm sm:rounded-lg border border-stone-100 hover:shadow-md transition duration-200">
                     <div class="p-6">
@@ -142,28 +156,38 @@
                         </div>
                         <p class="text-gray-600 text-sm mb-4">現在の口座残高の合計と、各口座の内訳を確認できます。</p>
 
-                        <div class="text-3xl font-bold text-gray-900 mb-4">
+                        <!-- 合計金額を先に、大きく表示 -->
+                        <div class="text-3xl font-bold text-gray-900 mb-6">
                             ¥{{ number_format($total) }}
                         </div>
 
-                        <!-- 円グラフ -->
-                        <div class="mb-6" style="max-width: 260px; margin-left: auto; margin-right: auto;">
-                            <canvas id="accountsPieChart"></canvas>
+                        @if ($accounts->isEmpty())
+                            <p class="text-sm text-gray-400 mb-6">登録されている口座はまだありません</p>
+                        @else
+                            <!-- 円グラフ -->
+                            <div class="mb-6" style="max-width: 260px; margin-left: auto; margin-right: auto;">
+                                <canvas id="accountsPieChart"></canvas>
+                            </div>
+                            <ul class="space-y-1 mb-6">
+                                @foreach ($accounts as $account)
+                                    <li class="flex justify-between text-sm border-b pb-1">
+                                        <span>{{ $account->name }}</span>
+                                        <span>¥{{ number_format($account->balance) }}</span>
+                                    </li>
+                                @endforeach
+                            </ul>
+                        @endif
+
+                        <div class="flex flex-wrap gap-2">
+                            <a href="{{ route('accounts.create') }}"
+                                class="inline-block px-5 py-2.5 bg-[#8A9A86] text-white text-sm font-medium rounded-xl hover:bg-[#788874] transition duration-200 text-center">
+                                ＋ 口座新規登録
+                            </a>
+                            <a href="{{ route('accounts.index') }}"
+                                class="inline-block px-5 py-2.5 bg-amber-700 text-white text-sm font-medium rounded-xl hover:bg-amber-800 transition duration-200 text-center">
+                                口座一覧を見る
+                            </a>
                         </div>
-
-                        <ul class="space-y-1 mb-6">
-                            @foreach ($accounts as $account)
-                                <li class="flex justify-between text-sm border-b pb-1">
-                                    <span>{{ $account->name }}</span>
-                                    <span>¥{{ number_format($account->balance) }}</span>
-                                </li>
-                            @endforeach
-                        </ul>
-
-                        <a href="{{ route('accounts.index') }}"
-                            class="inline-block px-5 py-2.5 bg-amber-700 text-white text-sm font-medium rounded-xl hover:bg-amber-800 transition duration-200 text-center">
-                            口座一覧を見る
-                        </a>
                     </div>
                 </div>
 

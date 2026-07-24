@@ -146,6 +146,7 @@ class AccountController extends Controller
 
         $comments = \App\Models\MonthlyComment::where('user_id', $userId)
             ->where('month', $month)
+            ->orderBy('created_at', 'desc')
             ->get();
 
         return view('dashboard', compact(
