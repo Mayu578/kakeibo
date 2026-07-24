@@ -1,14 +1,14 @@
 FROM php:8.4-apache
 
-# 必要な拡張機能のインストール
-FROM php:8.4-apache
-
-# 必要な拡張機能のインストール（pdo_mysql を追加）
+# 必要な拡張機能とNode.js（Viteのビルド用）のインストール
 RUN apt-get update && apt-get install -y \
     libpq-dev \
     zip \
     unzip \
     git \
+    curl \
+    && curl -fsSL https://deb.nodesource.com/setup_20.x | bash - \
+    && apt-get install -y nodejs \
     && docker-php-ext-install pdo pdo_pgsql
 
 # Apacheの設定変更
@@ -24,6 +24,9 @@ WORKDIR /var/www/html
 # Composerのインストールと実行
 COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 RUN composer install --no-dev --optimize-autoloader
+
+# Node.jsパッケージのインストールとViteのビルド
+RUN npm install && npm run build
 
 # 権限の変更
 RUN chown -R www-data:www-data /var/www/html/storage /var/www/html/bootstrap/cache
