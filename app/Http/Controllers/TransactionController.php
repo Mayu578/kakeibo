@@ -48,6 +48,12 @@ class TransactionController extends Controller
         return view('transactions.create', compact('accounts'));
     }
 
+    public function edit(Transaction $transaction)
+    {
+        $accounts = Account::all();
+        return view('transactions.edit', compact('transaction','accounts'));
+    }
+
 
     public function store(Request $request)
     {
@@ -55,28 +61,18 @@ class TransactionController extends Controller
             'account_id' => 'required|exists:accounts,id',
             'transaction_date' => 'required|date',
             'type' => 'required|in:income,expense',
+            'category' => 'required|in:' . implode(',', array_keys(Transaction::CATEGORIES)), // ← 追加
             'amount' => 'required|numeric|min:0',
             'payment_type' => 'required|in:cash,credit',
             'due_date' => 'nullable|date|after_or_equal:today',
             'description' => 'nullable|string|max:255',
         ]);
 
-        // 1. バリデーション済みデータに、現在ログインしているユーザーのIDを合流させる
         $validated['user_id'] = auth()->id();
-
-        // 2. Transactionモデルから直接レコードを作成する（これでリレーションエラーを100%回避できます）
         $transaction = Transaction::create($validated);
-
-        // 残高更新は行わない
 
         return redirect()->route('transactions.create')->with('success', '取引を登録しました');
     }
-
-    public function edit(Transaction $transaction)
-    {
-        return view('transactions.edit', compact('transaction'));
-    }
-
 
     public function update(Request $request, Transaction $transaction)
     {
@@ -84,6 +80,7 @@ class TransactionController extends Controller
             'account_id' => 'required|exists:accounts,id',
             'transaction_date' => 'required|date',
             'type' => 'required|in:income,expense',
+            'category' => 'required|in:' . implode(',', array_keys(Transaction::CATEGORIES)), // ← 追加
             'amount' => 'required|numeric|min:0',
             'payment_type' => 'required|in:cash,credit',
             'due_date' => 'nullable|date',

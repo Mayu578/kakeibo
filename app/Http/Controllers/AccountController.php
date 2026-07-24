@@ -133,6 +133,17 @@ class AccountController extends Controller
 
         $balance = $totalIncome - ($totalExpense + $totalFixedCost);
 
+        $categoryTotals = $transactions
+            ->where('type', 'expense')
+            ->groupBy('category')
+            ->map(fn($group) => $group->sum('amount'));
+
+        $categoryLabels = $categoryTotals->keys()
+            ->map(fn($key) => \App\Models\Transaction::CATEGORIES[$key] ?? 'その他')
+            ->values();
+
+        $categoryAmounts = $categoryTotals->values();
+
         $comments = \App\Models\MonthlyComment::where('user_id', $userId)
             ->where('month', $month)
             ->get();
@@ -145,11 +156,13 @@ class AccountController extends Controller
             'totalIncome',
             'balance',
             'totalFixedCost',
-            'fixedCosts', 
+            'fixedCosts',
             'fixedCostsCount',
             'nextWithdrawalDay',
             'month',
-            'comments'
+            'comments',
+            'categoryLabels',
+            'categoryAmounts'
         ));
     }
 }

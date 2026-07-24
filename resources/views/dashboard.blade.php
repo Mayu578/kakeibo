@@ -46,6 +46,37 @@
                             取引一覧を見る
                         </a>
                     </div>
+                    <div class="p-6">
+                        <div class="flex items-center space-x-3 mb-4">
+                            <span class="text-2xl">🏷️</span>
+                            <h3 class="text-lg font-bold text-gray-800">カテゴリー別支出</h3>
+                        </div>
+                        <p class="text-gray-600 text-sm mb-4">{{ $month }} の支出をカテゴリー別に集計しています。</p>
+
+                        @if ($categoryAmounts->isEmpty())
+                            <p class="text-sm text-gray-400">この月の支出はまだありません</p>
+                        @else
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-4 items-center">
+                                <!-- 円グラフ -->
+                                <div style="max-width: 220px; margin: 0 auto;">
+                                    <canvas id="categoryPieChart"></canvas>
+                                </div>
+                                <!-- 棒グラフ -->
+                                <div>
+                                    <canvas id="categoryBarChart"></canvas>
+                                </div>
+                            </div>
+
+                            <ul class="space-y-1 mt-6">
+                                @foreach ($categoryLabels as $i => $label)
+                                    <li class="flex justify-between text-sm border-b pb-1">
+                                        <span>{{ $label }}</span>
+                                        <span>¥{{ number_format($categoryAmounts[$i]) }}</span>
+                                    </li>
+                                @endforeach
+                            </ul>
+                        @endif
+                    </div>
                 </div>
 
                 <!-- 固定費（Fixed Costs）カード -->
@@ -97,6 +128,9 @@
                         </a>
                     </div>
                 </div>
+
+                <!-- カテゴリー別支出（Category Breakdown）カード -->
+
 
                 <!-- 口座残高（Accounts）カード -->
                 <div
@@ -178,6 +212,79 @@
                     }
                 }
             });
+
+            const categoryLabels = [
+                @foreach ($categoryLabels as $label)
+                    "{{ $label }}",
+                @endforeach
+            ];
+            const categoryAmounts = [
+                @foreach ($categoryAmounts as $amount)
+                    {{ $amount }},
+                @endforeach
+            ];
+            const categoryColors = [
+                '#C87A53', '#8A9A86', '#7B8CA3', '#D4A574',
+                '#A68DAD', '#6B9080', '#E0A96D', '#9C8AA5'
+            ];
+            const pieCtx = document.getElementById('categoryPieChart');
+            if (pieCtx) {
+                new Chart(pieCtx, {
+                    type: 'pie',
+                    data: {
+                        labels: categoryLabels,
+                        datasets: [{
+                            data: categoryAmounts,
+                            backgroundColor: categoryColors,
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        plugins: {
+                            legend: {
+                                position: 'bottom',
+                                labels: {
+                                    boxWidth: 12,
+                                    font: {
+                                        size: 11
+                                    }
+                                }
+                            }
+                        }
+                    }
+                });
+            }
+
+            const barCtx = document.getElementById('categoryBarChart');
+            if (barCtx) {
+                new Chart(barCtx, {
+                    type: 'bar',
+                    data: {
+                        labels: categoryLabels,
+                        datasets: [{
+                            label: '支出額',
+                            data: categoryAmounts,
+                            backgroundColor: categoryColors,
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        plugins: {
+                            legend: {
+                                display: false
+                            }
+                        },
+                        scales: {
+                            y: {
+                                beginAtZero: true,
+                                ticks: {
+                                    callback: (value) => '¥' + value.toLocaleString()
+                                }
+                            }
+                        }
+                    }
+                });
+            }
         });
     </script>
 </x-app-layout>

@@ -9,6 +9,7 @@ class Transaction extends Model
     protected $fillable = [
         'account_id',
         'type',
+        'category',
         'amount',
         'transaction_date',
         'reflect_date',
@@ -18,7 +19,21 @@ class Transaction extends Model
         'user_id',
     ];
 
+    public const CATEGORIES = [
+        'entertainment' => '娯楽費',
+        'food'          => '食費',
+        'dining_out'    => '外食費',
+        'daily_goods'   => '日用品費',
+        'communication' => '通信費',
+        'utility'       => '光熱費',
+        'relax'         =>'リラックス費',
+        'other'         => 'その他',
+    ];
 
+    public function getCategoryLabelAttribute(): string
+    {
+        return self::CATEGORIES[$this->category] ?? 'その他';
+    }
 
     public function account()
     {
