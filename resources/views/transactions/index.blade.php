@@ -84,6 +84,7 @@
                             <th class="py-3 text-left font-normal">日付</th>
                             <th class="py-3 text-left font-normal">口座</th>
                             <th class="py-3 text-center font-normal">種別</th>
+                            <th class="py-3 text-center font-normal">カテゴリー</th>
                             <th class="py-3 text-right font-normal">金額</th>
                             <th class="py-3 text-left font-normal pl-4">内容</th>
                             <th class="py-3 text-center font-normal">反映日</th>
@@ -116,6 +117,13 @@
                                     @endif
                                 </td>
 
+                                <td class="py-4 text-center whitespace-nowrap">
+                                    <span
+                                        class="px-2.5 py-0.5 text-xs bg-stone-50 text-stone-500 rounded-md font-medium border border-stone-200">
+                                        {{ $transaction->category_label }}
+                                    </span>
+                                </td>
+
                                 <td class="py-4 text-right font-semibold whitespace-nowrap tracking-wide">
                                     @if ($transaction->type === 'income')
                                         <span class="text-[#6B8E6A]">
@@ -137,14 +145,21 @@
                                 </td>
 
                                 <td class="py-4 text-right whitespace-nowrap">
-                                    <form action="{{ route('transactions.destroy', $transaction) }}" method="POST">
-                                        @csrf
-                                        @method('DELETE')
-                                        <button type="submit" onclick="return confirm('本当に削除しますか？')"
-                                            class="px-3 py-1 text-xs bg-stone-50 border border-stone-200 text-stone-400 rounded-lg hover:bg-red-50 hover:text-red-500 hover:border-red-100 transition-all">
-                                            削除
-                                        </button>
-                                    </form>
+                                    <div class="flex items-center justify-end gap-2">
+                                        <a href="{{ route('transactions.edit', $transaction) }}"
+                                            class="px-3 py-1 text-xs bg-stone-50 border border-stone-200 text-stone-500 rounded-lg hover:bg-stone-100 transition-all inline-block">
+                                            編集
+                                        </a>
+                                        <form action="{{ route('transactions.destroy', $transaction) }}"
+                                            method="POST">
+                                            @csrf
+                                            @method('DELETE')
+                                            <button type="submit" onclick="return confirm('本当に削除しますか？')"
+                                                class="px-3 py-1 text-xs bg-stone-50 border border-stone-200 text-stone-400 rounded-lg hover:bg-red-50 hover:text-red-500 hover:border-red-100 transition-all">
+                                                削除
+                                            </button>
+                                        </form>
+                                    </div>
                                 </td>
                             </tr>
                         @endforeach
