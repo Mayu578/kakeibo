@@ -25,16 +25,24 @@
                                     <p class="text-xs text-gray-500">
                                         {{ $comment->user->name }} - {{ $comment->created_at->format('Y/m/d H:i') }}
                                     </p>
-                                    @can('delete', $comment)
-                                        <form method="POST" action="{{ route('monthly-comments.destroy', $comment) }}">
-                                            @csrf
-                                            @method('DELETE')
-                                            <button type="submit"
-                                                class="text-xs text-red-500 hover:text-red-700 transition duration-200">
-                                                削除
-                                            </button>
-                                        </form>
-                                    @endcan
+                                    <div class="flex items-center gap-2">
+                                        @can('update', $comment)
+                                            <a href="{{ route('monthly-comments.editComment', $comment) }}"
+                                                class="px-3 py-1 text-xs bg-stone-100 text-stone-600 rounded-lg hover:bg-stone-200 transition-colors inline-block">
+                                                編集
+                                            </a>
+                                        @endcan
+                                        @can('delete', $comment)
+                                            <form method="POST" action="{{ route('monthly-comments.destroy', $comment) }}">
+                                                @csrf
+                                                @method('DELETE')
+                                                <button type="submit"
+                                                    class="px-3 py-1 text-xs bg-red-50 text-red-500 rounded-lg hover:bg-red-100 transition-colors">
+                                                    削除
+                                                </button>
+                                            </form>
+                                        @endcan
+                                    </div>
                                 </div>
                                 <p class="text-sm text-gray-800 whitespace-pre-wrap">{{ $comment->comment }}</p>
                             </li>

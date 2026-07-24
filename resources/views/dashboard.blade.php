@@ -10,17 +10,29 @@
                 @endphp
 
 
-                <ul class="flex gap-2">
-                    <h6>コメント</h6>
-                    @foreach ($months as $m)
-                        <li>
-                            <a href="{{ route('monthly-comments.index', $m) }}" class="text-blue-500 underline">
-                                {{ $m }}
-                            </a>
-                        </li>
-                    @endforeach
-                </ul>
-                <!-- 取引（Transactions）カード -->
+                <!-- コメント（Monthly Comments）カード -->
+                <div
+                    class="bg-white overflow-hidden shadow-sm sm:rounded-lg border border-stone-100 hover:shadow-md transition duration-200">
+                    <div class="p-6">
+                        <div class="flex items-center space-x-3 mb-4">
+                            <span class="text-2xl">💬</span>
+                            <h3 class="text-lg font-bold text-gray-800">コメント (Monthly Comments)</h3>
+                        </div>
+                        <p class="text-gray-600 text-sm mb-4">月ごとの振り返りメモを確認・投稿できます。</p>
+
+                        <ul class="flex flex-wrap gap-2">
+                            @foreach ($months as $m)
+                                <li>
+                                    <a href="{{ route('monthly-comments.index', $m) }}"
+                                        class="inline-block px-3 py-1.5 bg-stone-50 border border-stone-200 text-stone-600 text-sm rounded-lg hover:bg-stone-100 transition duration-200">
+                                        {{ $m }}
+                                    </a>
+                                </li>
+                            @endforeach
+                        </ul>
+                    </div>
+                </div>
+
                 <div
                     class="bg-white overflow-hidden shadow-sm sm:rounded-lg border border-stone-100 hover:shadow-md transition duration-200">
                     <div class="p-6">

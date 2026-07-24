@@ -39,6 +39,10 @@ Route::middleware(['auth'])->group(function () {
         ->name('monthly-comments.index');
     Route::post('/monthly-summaries/{month}/comments', [MonthlyCommentController::class, 'store'])
         ->name('monthly-comments.store');
+    Route::get('/monthly-comments/{monthlyComment}/edit', [MonthlyCommentController::class, 'editComment'])
+        ->name('monthly-comments.editComment');
+    Route::patch('/monthly-comments/{monthlyComment}', [MonthlyCommentController::class, 'updateComment'])
+        ->name('monthly-comments.updateComment');
     Route::delete('/monthly-comments/{monthlyComment}', [MonthlyCommentController::class, 'destroy'])
         ->name('monthly-comments.destroy');
 });

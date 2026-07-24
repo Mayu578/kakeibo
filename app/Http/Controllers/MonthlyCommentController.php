@@ -30,6 +30,35 @@ class MonthlyCommentController extends Controller
         return back()->with('status', 'コメントを投稿しました');
     }
 
+    public function editComment(MonthlyComment $monthlyComment)
+    {
+        if ($monthlyComment->user_id !== auth()->id()) {
+            abort(403);
+        }
+
+        return view('monthly-summaries.edit', compact('monthlyComment'));
+    }
+
+    public function updateComment(Request $request, MonthlyComment $monthlyComment)
+    {
+        if ($monthlyComment->user_id !== auth()->id()) {
+            abort(403);
+        }
+
+        $request->validate([
+            'content' => 'required|string|max:1000', // 実際のカラム名に合わせて調整
+        ]);
+
+        $monthlyComment->update([
+            'content' => $request->content,
+        ]);
+
+        return redirect()
+            ->route('monthly-comments.index', $monthlyComment->month) // 月の値をどう持っているか要確認
+            ->with('success', '更新しました');
+    }
+
+
     public function destroy(MonthlyComment $monthlyComment)
     {
         $this->authorize('delete', $monthlyComment);

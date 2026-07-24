@@ -14,4 +14,12 @@ class MonthlyCommentPolicy
     {
         return $user->id === $monthlyComment->user_id;
     }
+
+    /**
+     * コメントの編集権限：投稿者本人のみ許可
+     */
+    public function update(User $user, MonthlyComment $monthlyComment): bool
+    {
+        return $user->id === $monthlyComment->user_id;
+    }
 }
