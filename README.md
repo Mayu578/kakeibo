@@ -2,6 +2,9 @@
 
 シンプルで使いやすい家計簿管理アプリケーションです。日々の収入・支出の記録や、家賃・サブスクなどの固定費管理をまとめて行うことができます。
 
+## 🌐 サービスURL
+- 本番環境: [https://kakeibo-r93g.onrender.com](https://kakeibo-r93g.onrender.com)
+
 ## 主な機能
 
 ### 📊 取引管理 (Transactions)
