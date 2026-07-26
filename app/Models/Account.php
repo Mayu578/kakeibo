@@ -9,12 +9,18 @@ class Account extends Model
     protected $fillable = [
         'name',
         'balance',
-        'type', 
+        'type',
         'user_id',
     ];
-    
+
     public function fixedCosts()
     {
         return $this->hasMany(FixedCost::class);
+    }
+
+
+    public function transactions()
+    {
+        return $this->hasMany(Transaction::class);
     }
 }
