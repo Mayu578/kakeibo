@@ -47,13 +47,19 @@ class AccountController extends Controller
 
     public function destroy($id)
     {
-        // 【修正】他人の口座を削除できないよう、ログインユーザーの口座から探す
         $account = Account::where('user_id', auth()->id())->findOrFail($id);
+
+        // 関連する取引がある場合は削除させない、などの制御例
+        if ($account->transactions()->exists()) {
+            return redirect()->route('accounts.index')
+                ->with('error', '取引履歴がある口座は削除できません。');
+        }
+
         $account->delete();
 
         return redirect()->route('accounts.index')->with('success', '口座を削除しました。');
     }
-
+    
     // 残高編集画面の表示
     public function editBalance(Account $account)
     {
