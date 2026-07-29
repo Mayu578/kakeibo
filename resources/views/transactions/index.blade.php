@@ -45,34 +45,40 @@
         </div>
 
         <!-- まとめボードエリア -->
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
-
-            <!-- 変動費（今月の取引合計） -->
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
+            <!-- 収入 -->
             <div class="bg-white rounded-2xl p-5 border border-stone-200/60 shadow-[0_4px_20px_rgba(0,0,0,0.02)]">
-                <span class="text-xs text-stone-400 font-medium block mb-1">今月の変動費</span>
-                <span class="text-xl font-bold text-stone-800">
-                    {{ number_format($totalExpenses) }} <span class="text-xs font-normal text-stone-500">円</span>
+                <span class="text-xs text-stone-400 font-medium block mb-1">今月の収入</span>
+                <span class="text-xl font-bold text-emerald-600">
+                    {{ number_format($variableIncome) }} <span class="text-xs font-normal text-stone-500">円</span>
                 </span>
             </div>
 
-            <!-- 固定費合計 -->
+            <!-- 変動費 -->
+            <div class="bg-white rounded-2xl p-5 border border-stone-200/60 shadow-[0_4px_20px_rgba(0,0,0,0.02)]">
+                <span class="text-xs text-stone-400 font-medium block mb-1">今月の変動費</span>
+                <span class="text-xl font-bold text-stone-800">
+                    {{ number_format($variableExpense) }} <span class="text-xs font-normal text-stone-500">円</span>
+                </span>
+            </div>
+
+            <!-- 固定費 -->
             <div class="bg-white rounded-2xl p-5 border border-stone-200/60 shadow-[0_4px_20px_rgba(0,0,0,0.02)]">
                 <span class="text-xs text-stone-400 font-medium block mb-1">毎月の固定費</span>
                 <span class="text-xl font-bold text-stone-800">
                     {{ number_format($fixedCostsTotal) }} <span class="text-xs font-normal text-stone-500">円</span>
                 </span>
             </div>
+        </div>
 
-            <!-- 差額（合計支出） -->
-            <div
-                class="bg-[#8A9A86]/10 rounded-2xl p-5 border border-[#8A9A86]/20 shadow-[0_4px_20px_rgba(138,154,134,0.02)]">
-                <span class="text-xs text-[#6B7B67] font-medium block mb-1">総支出（変動費 ＋ 固定費）</span>
-                <span class="text-xl font-bold text-[#6B7B67]">
-                    {{ number_format($totalExpenses + $fixedCostsTotal) }} <span
-                        class="text-xs font-normal text-stone-600">円</span>
-                </span>
-            </div>
-
+        <!-- 総支出：フル幅で目立たせる -->
+        <div
+            class="mb-8 bg-[#8A9A86]/10 rounded-2xl p-5 border border-[#8A9A86]/20 shadow-[0_4px_20px_rgba(138,154,134,0.02)]">
+            <span class="text-xs text-[#6B7B67] font-medium block mb-1">総支出（変動費 ＋ 固定費）</span>
+            <span class="text-xl font-bold text-[#6B7B67]">
+                {{ number_format($variableExpense + $fixedCostsTotal) }} <span
+                    class="text-xs font-normal text-stone-600">円</span>
+            </span>
         </div>
 
         <div

@@ -25,10 +25,10 @@ class TransactionController extends Controller
             ->orderBy('transaction_date', 'desc')
             ->get();
 
-        // ③ 当月の変動費の支出合計を計算（※収入と支出が区別されている場合、支出のみ合計。もし単純合算なら $transactions->sum('amount') に変更してください）
-        // ここでは「支出（typeが'expense'、あるいは金額がマイナスなど）」を合計する例にしています
-        // 実装に合わせて調整してください。単純な合計なら $transactions->sum('amount') でOKです。
-        $totalExpenses = $transactions->sum('amount');
+
+        // ③ 変動費(transactionsテーブル)を収入・支出に分けて集計
+        $variableIncome = $transactions->where('type', 'income')->sum('amount');
+        $variableExpense = $transactions->where('type', 'expense')->sum('amount');
 
         // ④ アクティブな固定費を取得して合計を算出
         $today = now()->toDateString();
@@ -39,7 +39,17 @@ class TransactionController extends Controller
             })
             ->sum('amount');
 
-        return view('transactions.index', compact('transactions', 'totalExpenses', 'fixedCostsTotal', 'month'));
+        // ⑤ 総支出 = 固定費 + 変動費(支出のみ)
+        $totalExpenses = $fixedCostsTotal + $variableExpense;
+
+        return view('transactions.index', compact(
+            'transactions',
+            'totalExpenses',
+            'variableIncome',
+            'variableExpense',
+            'fixedCostsTotal',
+            'month'
+        ));
     }
 
     public function create()
@@ -51,7 +61,7 @@ class TransactionController extends Controller
     public function edit(Transaction $transaction)
     {
         $accounts = Account::all();
-        return view('transactions.edit', compact('transaction','accounts'));
+        return view('transactions.edit', compact('transaction', 'accounts'));
     }
 
 

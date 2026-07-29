@@ -59,7 +59,7 @@ class AccountController extends Controller
 
         return redirect()->route('accounts.index')->with('success', '口座を削除しました。');
     }
-    
+
     // 残高編集画面の表示
     public function editBalance(Account $account)
     {
@@ -144,11 +144,12 @@ class AccountController extends Controller
             ->groupBy('category')
             ->map(fn($group) => $group->sum('amount'));
 
-        $categoryLabels = $categoryTotals->keys()
-            ->map(fn($key) => \App\Models\Transaction::CATEGORIES[$key] ?? 'その他')
-            ->values();
-
-        $categoryAmounts = $categoryTotals->values();
+        $categoryData = $categoryTotals->mapWithKeys(function ($amount, $key) {
+            $label = \App\Models\Transaction::CATEGORIES[$key] ?? 'その他';
+            return [$label => $amount];
+        })
+            ->groupBy(fn($amount, $label) => $label)  // 同じラベルをグループ化
+            ->map(fn($group) => $group->sum());        // グループ内を合計
 
         $comments = \App\Models\MonthlyComment::where('user_id', $userId)
             ->where('month', $month)
@@ -168,8 +169,7 @@ class AccountController extends Controller
             'nextWithdrawalDay',
             'month',
             'comments',
-            'categoryLabels',
-            'categoryAmounts'
+            'categoryData'
         ));
     }
 }

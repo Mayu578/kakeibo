@@ -66,7 +66,7 @@
                         </div>
                         <p class="text-gray-600 text-sm mb-4">{{ $month }} の支出をカテゴリー別に集計しています。</p>
 
-                        @if ($categoryAmounts->isEmpty())
+                        @if ($categoryData->isEmpty())
                             <p class="text-sm text-gray-400">この月の支出はまだありません</p>
                         @else
                             <div class="grid grid-cols-1 md:grid-cols-2 gap-4 items-center">
@@ -81,10 +81,10 @@
                             </div>
 
                             <ul class="space-y-1 mt-6">
-                                @foreach ($categoryLabels as $i => $label)
+                                @foreach ($categoryData as $label => $amount)
                                     <li class="flex justify-between text-sm border-b pb-1">
                                         <span>{{ $label }}</span>
-                                        <span>¥{{ number_format($categoryAmounts[$i]) }}</span>
+                                        <span>¥{{ number_format($amount) }}</span>
                                     </li>
                                 @endforeach
                             </ul>
@@ -237,16 +237,13 @@
                 }
             });
 
-            const categoryLabels = [
-                @foreach ($categoryLabels as $label)
-                    "{{ $label }}",
-                @endforeach
-            ];
-            const categoryAmounts = [
-                @foreach ($categoryAmounts as $amount)
-                    {{ $amount }},
-                @endforeach
-            ];
+            @php
+                $categoryLabelsJson = $categoryData->keys();
+                $categoryAmountsJson = $categoryData->values();
+            @endphp
+            const categoryLabels = @json($categoryLabelsJson);
+            const categoryAmounts = @json($categoryAmountsJson);
+
             const categoryColors = [
                 '#C87A53', '#8A9A86', '#7B8CA3', '#D4A574',
                 '#A68DAD', '#6B9080', '#E0A96D', '#9C8AA5'
