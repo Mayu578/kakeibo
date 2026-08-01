@@ -53,12 +53,34 @@ class FixedCostController extends Controller
             ->with('success', '固定費を登録しました。');
     }
 
+    public function edit(FixedCost $fixed_cost)
+    {
+        $accounts = Account::all(); // 例
+        return view('fixed_costs.edit', compact('fixed_cost', 'accounts'));
+    }
+
+    public function update(Request $request, FixedCost $fixed_cost)
+    {
+        $validated = $request->validate([
+            'account_id'      => 'required|exists:accounts,id',
+            'name'            => 'required|string|max:255',
+            'amount'          => 'required|integer|min:0',
+            'withdrawal_day'  => 'required|integer|min:1|max:31',
+            'end_date'        => 'nullable|date',
+        ]);
+
+        $fixed_cost->update($validated);
+
+        return redirect()->route('fixed_costs.index')
+            ->with('success', '固定費を更新しました');
+    }
+
+
+
     public function destroy(FixedCost $fixedCost)
     {
         $fixedCost->delete();
 
         return redirect()->route('fixed-costs.index');
     }
-
-    
 }

@@ -19,10 +19,12 @@
         </div>
 
         <!-- 【追加】合計金額表示エリア -->
-        <div class="mb-6 bg-[#8A9A86]/10 border border-[#8A9A86]/20 rounded-2xl p-5 flex justify-between items-center shadow-sm">
+        <div
+            class="mb-6 bg-[#8A9A86]/10 border border-[#8A9A86]/20 rounded-2xl p-5 flex justify-between items-center shadow-sm">
             <span class="text-stone-700 font-medium text-sm md:text-base">毎月の固定費 合計</span>
             <span class="text-xl md:text-2xl font-bold text-[#6B7B67] tracking-wide">
-                {{ number_format($fixedCosts->sum('amount')) }} <span class="text-sm font-normal text-stone-600">円 / 月</span>
+                {{ number_format($fixedCosts->sum('amount')) }} <span class="text-sm font-normal text-stone-600">円 /
+                    月</span>
             </span>
         </div>
 
@@ -65,7 +67,13 @@
                                 </td>
 
                                 <td class="py-4 text-right">
+                                <td class="py-4 text-right space-x-2">
+                                    <a href="{{ route('fixed_costs.edit', $fixedCost) }}"
+                                        class="px-3 py-1 text-xs bg-stone-50 border border-stone-200 text-stone-500 rounded-lg hover:bg-stone-100 transition-all inline-block">
+                                        編集
+                                    </a>
                                     <form action="{{ route('fixed_costs.destroy', $fixedCost) }}" method="POST">
+
                                         @csrf
                                         @method('DELETE')
                                         <button type="submit" onclick="return confirm('本当に削除しますか？')"
