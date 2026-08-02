@@ -151,6 +151,41 @@ class AccountController extends Controller
             ->groupBy(fn($amount, $label) => $label)  // 同じラベルをグループ化
             ->map(fn($group) => $group->sum());        // グループ内を合計
 
+
+        // 支出カレンダー用データ
+        $calendarData = $transactions
+            ->where('type', 'expense')
+            ->groupBy(function ($transaction) {
+                return Carbon::parse($transaction->transaction_date)
+                    ->format('Y-m-d');
+            })
+            ->map(function ($dayTransactions) {
+
+                return $dayTransactions
+                    ->groupBy('category')
+                    ->map(function ($items) {
+                        return $items->sum('amount');
+                    });
+            });
+
+
+        // 月の日付カレンダー作成
+        $calendar = [];
+
+        for (
+            $day = $date->copy()->startOfMonth();
+            $day <= $lastDayOfMonth;
+            $day->addDay()
+        ) {
+
+            $dayString = $day->format('Y-m-d');
+
+            $calendar[] = [
+                'date' => $dayString,
+                'expenses' => $calendarData[$dayString] ?? []
+            ];
+        }
+
         $comments = \App\Models\MonthlyComment::where('user_id', $userId)
             ->where('month', $month)
             ->orderBy('created_at', 'desc')
@@ -169,7 +204,8 @@ class AccountController extends Controller
             'nextWithdrawalDay',
             'month',
             'comments',
-            'categoryData'
+            'categoryData',
+            'calendar'
         ));
     }
 }

@@ -191,6 +191,184 @@
                     </div>
                 </div>
 
+                <!-- 支出カレンダー -->
+
+                <div class="md:col-span-2">
+
+                    <div
+                        class="bg-white overflow-hidden shadow-sm sm:rounded-lg border border-stone-100 hover:shadow-md transition duration-200">
+
+                        <div class="p-6">
+
+
+                            <div class="flex items-center justify-between mb-5">
+
+
+                                <div class="flex items-center space-x-3">
+
+                                    <span class="text-2xl">📅</span>
+
+                                    <h3 class="text-lg font-bold text-gray-800">
+                                        支出カレンダー
+                                    </h3>
+
+                                </div>
+
+
+
+                                <!-- 月切替 -->
+
+                                <div class="flex items-center gap-2">
+
+
+                                    <a href="?month={{ \Carbon\Carbon::parse($month)->subMonth()->format('Y-m') }}"
+                                        class="px-3 py-1 bg-stone-100 rounded-lg hover:bg-stone-200">
+
+                                        ←
+
+                                    </a>
+
+
+
+                                    <span class="font-bold text-sm">
+
+                                        {{ $month }}
+
+                                    </span>
+
+
+
+                                    <a href="?month={{ \Carbon\Carbon::parse($month)->addMonth()->format('Y-m') }}"
+                                        class="px-3 py-1 bg-stone-100 rounded-lg hover:bg-stone-200">
+
+                                        →
+
+                                    </a>
+
+
+                                </div>
+
+
+                            </div>
+
+
+
+
+                            <!-- 曜日 -->
+
+                            <div class="grid grid-cols-7 gap-2 mb-2 text-center text-xs text-gray-500">
+
+                                <div>日</div>
+                                <div>月</div>
+                                <div>火</div>
+                                <div>水</div>
+                                <div>木</div>
+                                <div>金</div>
+                                <div>土</div>
+
+                            </div>
+
+
+
+
+                            @php
+
+                                $firstDay = \Carbon\Carbon::parse($month . '-01')->dayOfWeek;
+
+                            @endphp
+
+
+
+
+
+                            <div class="grid grid-cols-7 gap-2">
+
+
+
+                                <!-- 月初空白 -->
+
+                                @for ($i = 0; $i < $firstDay; $i++)
+                                    <div></div>
+                                @endfor
+
+
+
+
+
+
+                                @foreach ($calendar as $day)
+                                    <div
+                                        class="
+                        border
+                        rounded-xl
+                        p-3
+                        min-h-[130px]
+                        bg-stone-50
+                        hover:bg-stone-100
+                        transition
+                        ">
+
+
+                                        <div class="font-bold text-sm mb-3">
+
+                                            {{ \Carbon\Carbon::parse($day['date'])->day }}日
+
+                                        </div>
+
+
+
+
+
+                                        @forelse($day['expenses'] as $category=>$amount)
+                                            <div class="text-xs mb-2">
+
+
+                                                <div class="text-gray-600">
+
+                                                    {{ $category }}
+
+                                                </div>
+
+
+
+                                                <div class="font-bold">
+
+                                                    ¥{{ number_format($amount) }}
+
+                                                </div>
+
+
+                                            </div>
+
+
+
+                                        @empty
+
+
+                                            <div class="text-xs text-gray-300">
+
+                                                -
+
+                                            </div>
+                                        @endforelse
+
+
+
+                                    </div>
+                                @endforeach
+
+
+
+                            </div>
+
+
+
+                        </div>
+
+                    </div>
+
+                </div>
+
             </div>
 
         </div>
