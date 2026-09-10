@@ -10,21 +10,33 @@
 ### 📊 取引管理 (Transactions)
 - 日々の収入・支出の記録、編集
 - 月ごとの集計チャート表示
+![alt text](<スクリーンショット 2026-09-10 16.20.47.png>)
 
 ### ⏳ 固定費管理 (Fixed Costs)
 - 家賃、保険、サブスクなど、毎月定額で発生する支出の登録・管理
+![alt text](<スクリーンショット 2026-09-10 16.21.42.png>)
 
 ### 🔐 ユーザー認証
 - ログイン・新規登録機能
 - ユーザーごとにデータを管理(取引・固定費・アカウント情報)
+![alt text](<スクリーンショット 2026-09-10 16.22.14.png>)
 
 ## 技術スタック
 
-- **フレームワーク**: Laravel
-- **言語**: PHP
-- **フロントエンド**: Blade / CSS
-- **データベース**: MySQL(ローカル開発) / PostgreSQL(本番環境)
-- **インフラ**: Docker, Render
+### Backend
+- PHP
+- Laravel
+
+### Frontend
+- Blade
+- Tailwind CSS
+- Vite
+
+### Database
+- PostgreSQL
+
+### Infrastructure
+- Render
 
 ## セットアップ(ローカル開発)
 
