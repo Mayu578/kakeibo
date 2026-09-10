@@ -37,7 +37,7 @@ return [
 
     'guards' => [
         'web' => [
-            'driver' => 'session',
+            'driver' => 'session', /* セッション + CSRF方式の認証*/
             'provider' => 'users',
         ],
     ],
