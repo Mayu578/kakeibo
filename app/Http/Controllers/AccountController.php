@@ -12,10 +12,10 @@ class AccountController extends Controller
 {
     public function index()
     {
-        // 【修正】ログインユーザー（mayu）の口座のみ取得
+        // ログインユーザーの口座のみ取得
         $accounts = Account::where('user_id', auth()->id())->get();
 
-        // 【修正】ログインユーザーの口座残高の合計のみ算出
+        // ログインユーザーの口座残高の合計のみ算出
         $total = $accounts->sum('balance');
 
         return view('accounts.index', compact('accounts', 'total'));
@@ -28,6 +28,7 @@ class AccountController extends Controller
 
     public function store(Request $request)
     {
+        // データのチェック
         $request->validate([
             'name' => 'required|string|max:255',
             'balance' => 'required|numeric',
@@ -35,6 +36,7 @@ class AccountController extends Controller
         ]);
 
         // 【修正】作成する口座にログインユーザーの ID を紐付ける
+        //入力データの問題がなければ、SQLを実行して保存
         Account::create([
             'user_id' => auth()->id(),
             'name' => $request->name,

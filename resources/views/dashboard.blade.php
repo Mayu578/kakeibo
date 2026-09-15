@@ -144,8 +144,6 @@
 
                 <!-- カテゴリー別支出（Category Breakdown）カード -->
 
-
-                <!-- 口座残高（Accounts）カード -->
                 <!-- 口座残高（Accounts）カード -->
                 <div
                     class="bg-white overflow-hidden shadow-sm sm:rounded-lg border border-stone-100 hover:shadow-md transition duration-200">
@@ -184,7 +182,7 @@
                                 ＋ 口座新規登録
                             </a>
                             <a href="{{ route('accounts.index') }}"
-                                class="inline-block px-5 py-2.5 bg-amber-700 text-white text-sm font-medium rounded-xl hover:bg-amber-800 transition duration-200 text-center">
+                                class="inline-block px-5 py-2.5 bg-amber-700 text-sm font-medium rounded-xl hover:bg-amber-800 transition duration-200 text-center">
                                 口座一覧を見る
                             </a>
                         </div>
