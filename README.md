@@ -50,28 +50,28 @@
 ### インストール手順
 
 \`\`\`bash
-# リポジトリをクローン
+## リポジトリをクローン
 git clone https://github.com/Mayu578/kakeibo.git
 cd kakeibo
 
-# 依存パッケージをインストール
+## 依存パッケージをインストール
 composer install
 npm install
 
-# 環境設定ファイルをコピー
+## 環境設定ファイルをコピー
 cp .env.example .env
 php artisan key:generate
 
-# .envファイルにデータベース情報を設定
-# DB_DATABASE, DB_USERNAME, DB_PASSWORD など
+## .envファイルにデータベース情報を設定
+## DB_DATABASE, DB_USERNAME, DB_PASSWORD など
 
-# マイグレーション実行
+## マイグレーション実行
 php artisan migrate
 
-# アセットのビルド
+## アセットのビルド
 npm run build
 
-# 開発サーバーを起動
+## 開発サーバーを起動
 php artisan serve
 \`\`\`
 
@@ -99,17 +99,17 @@ php artisan serve
 新しい機能を追加する際は、以下の流れで作業してください。
 
 \`\`\`bash
-# 新しいブランチを作成
+## 新しいブランチを作成
 git checkout -b feature/機能名
 
-# 変更をコミット
+## 変更をコミット
 git add .
 git commit -m "変更内容"
 
-# GitHubにpush
+## GitHubにpush
 git push -u origin feature/機能名
 
-# GitHub上でPull Requestを作成し、mainにマージ
+## GitHub上でPull Requestを作成し、mainにマージ
 \`\`\`
 
 ## ライセンス
