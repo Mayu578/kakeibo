@@ -18,7 +18,7 @@
             固定費登録
         </h2>
 
-        <form method="POST" action="{{ route('fixed-costs.store') }}" class="space-y-5">
+        <form method="POST" action="{{ route('fixed_costs.store') }}" class="space-y-5">
             @csrf
 
             <div class="space-y-1.5">
