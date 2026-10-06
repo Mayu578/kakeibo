@@ -6,13 +6,12 @@ use Illuminate\Database\Eloquent\Model;
 
 class Transaction extends Model
 {
-    protected $fillable = [
+    protected $fillable = [ //外部には知られたくないデータ　代入して良いカラムを制限
         'account_id',
         'type',
         'category',
         'amount',
         'transaction_date',
-        'reflect_date',
         'description',
         'payment_type',
         'due_date',

@@ -35,11 +35,11 @@
             </form>
 
             <div class="flex justify-between items-center px-2 text-xs font-medium text-stone-400">
-                <a href="?month={{ \Carbon\Carbon::parse($month)->subMonth()->format('Y-m') }}"
+                <a href="?month={{ $date->copy()->subMonth()->format('Y-m') }}"
                     class="hover:text-stone-600 transition-colors flex items-center gap-1">← 前月</a>
                 <span
-                    class="text-stone-500 font-semibold text-sm">{{ \Carbon\Carbon::parse($month)->format('Y年m月') }}</span>
-                <a href="?month={{ \Carbon\Carbon::parse($month)->addMonth()->format('Y-m') }}"
+                    class="text-stone-500 font-semibold text-sm">{{ $date->format('Y年m月') }}</span>
+                <a href="?month={{ $date->copy()->addMonth()->format('Y-m') }}"
                     class="hover:text-stone-600 transition-colors flex items-center gap-1">次月 →</a>
             </div>
         </div>
@@ -93,7 +93,6 @@
                             <th class="py-3 text-center font-normal">カテゴリー</th>
                             <th class="py-3 text-right font-normal">金額</th>
                             <th class="py-3 text-left font-normal pl-4">内容</th>
-                            <th class="py-3 text-center font-normal">反映日</th>
                             <th class="w-20"></th>
                         </tr>
                     </thead>
@@ -144,10 +143,6 @@
 
                                 <td class="py-4 text-stone-800 pl-4">
                                     {{ $transaction->description }}
-                                </td>
-
-                                <td class="py-4 text-center text-stone-400 text-xs whitespace-nowrap">
-                                    {{ $transaction->reflect_date }}
                                 </td>
 
                                 <td class="py-4 text-right whitespace-nowrap">

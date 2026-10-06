@@ -48,7 +48,8 @@ class TransactionController extends Controller
             'variableIncome',
             'variableExpense',
             'fixedCostsTotal',
-            'month'
+            'month',
+            'date',
         ));
     }
 

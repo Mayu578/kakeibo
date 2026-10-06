@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\AccountController;
+use App\Http\Controllers\DashbordController;
 use App\Http\Controllers\FixedCostController;
 use App\Http\Controllers\MonthlyCommentController;
 use App\Http\Controllers\ProfileController;
@@ -11,7 +12,7 @@ Route::get('/', function () {
     return redirect()->route('login'); // ログイン画面にリダイレクトさせる
 });
 
-Route::get('/dashboard', [AccountController::class, 'dashboard'])
+Route::get('/dashboard', [DashbordController::class, 'dashboard'])
     ->middleware(['auth', 'verified'])
     ->name('dashboard');
 

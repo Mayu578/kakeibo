@@ -41,7 +41,12 @@
                         @foreach ($accounts as $account)
                             <tr class="hover:bg-stone-50/80 transition-colors">
                                 <td class="py-4 text-stone-700 font-medium pl-4">
-                                    {{ $account->name }}
+                                    @if ($account->name === 'NISA'|| $account->name === 'iDeCo')
+                                        <a href="https://www.rakuten-sec.co.jp/ITS/V_ACT_Login.html"
+                                            target="_blank">{{ $account->name }}</a>
+                                    @else
+                                        {{ $account->name }}
+                                    @endif
                                 </td>
                                 <td class="py-4 text-right font-semibold text-stone-800 tracking-wide pr-12">
                                     {{ number_format($account->balance) }} 円
